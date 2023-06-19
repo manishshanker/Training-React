@@ -1,4 +1,4 @@
-# Training-Session-1-React
+# Training-React
 
 ## Guide:
 1. Fork this repo
