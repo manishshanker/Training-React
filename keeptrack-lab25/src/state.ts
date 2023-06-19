@@ -1,6 +1,5 @@
-import { createStore, applyMiddleware } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 import ReduxThunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
 import { combineReducers } from "redux";
 import { ProjectState } from './projects/state/projectTypes';
 import { initialProjectState } from './projects/state/projectReducer';
@@ -10,21 +9,12 @@ const reducer = combineReducers({
   projectState: projectReducer
 });
 
-export default function configureStore(preloadedState: any) {
-  const middlewares = [ReduxThunk];
-  const middlewareEnhancer = applyMiddleware(...middlewares);
-
-  //Thunk is middleware
-  //DevTools is an enhancer (actually changes Redux)
-  //applyMiddleware wraps middleware and returns an enhancer
-
-  // to use only thunk middleware
-  // const enhancer = compose(middlewareEnhancer);
-
-  //to use thunk & devTools
-  const enhancer = composeWithDevTools(middlewareEnhancer);
-
-  const store = createStore(reducer, preloadedState, enhancer);
+export default function createAppStore(preloadedState: any) {
+  const store = configureStore({
+    reducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(ReduxThunk),
+    preloadedState
+  });
   return store;
 }
 
@@ -36,4 +26,4 @@ export const initialAppState: AppState = {
   projectState: initialProjectState
 };
 
-export const store = configureStore(initialAppState);
+export const store = createAppStore(initialAppState);
